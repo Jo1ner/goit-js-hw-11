@@ -5,15 +5,18 @@ export default class ApiService{
     constructor() {
         this.searchQuery = "";
         this.page = 1;
+        this.totalPages = 0;
     }
 
 fetchArticles() {
-const url = `${BASE_URL}?key=${API_KEY}&image_type=photo&orientation=horizontal&safesearch=true&q=${this.searchQuery}&page=${this.page}`;  return fetch(url)
+    const url = `${BASE_URL}?key=${API_KEY}&image_type=photo&orientation=horizontal&safesearch=true&q=${this.searchQuery}&page=${this.page}&per_page=40`;
+    return fetch(url)
 .then(resp => resp.json())
 .then(data => {
-          console.log(data);
-          this.incrementPage();
-          return data.hits;
+      console.log(data);
+      this.incrementPage();
+    this.totalPages = data.totalHits;
+      return data.hits;
 })
     } 
 incrementPage() {
