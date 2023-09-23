@@ -1,4 +1,4 @@
-
+// import axios from 'axios';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from 'notiflix';
@@ -18,35 +18,39 @@ function onSearch(evt) {
   apiService.query = evt.currentTarget.elements.searchQuery.value;
   if (!apiService.query.trim()) {
     Notiflix.Notify.failure("The search field is empty");
+    loadMoreBtn.classList.add("visually-hidden");
     return;
   };
   apiService.resetPage();
   apiService.fetchArticles()
     .then(hits => {
       createMarkup(hits);
-      if (apiService.totalPages) {
-        Notiflix.Notify.success(`Hooray! We found ${apiService.totalPages} images.`);
+      if (apiService.totalImages) {
+        Notiflix.Notify.success(`Hooray! We found ${apiService.totalImages} images.`);
       }
         else {
         Notiflix.Notify.failure("Sorry, nothing was found for your request");
         loadMoreBtn.classList.add("visually-hidden");
         return
       }
-    }
-    
+      loadMoreBtn.classList.remove("visually-hidden");
+      if (apiService.totalImages < apiService.perPage) {
+      loadMoreBtn.classList.add("visually-hidden");
+      }
+    }  
   )
-  loadMoreBtn.classList.add("visually-hidden");
 }
 
 loadMoreBtn.addEventListener("click", onLoadMore);
 function onLoadMore() {
   apiService.fetchArticles().then(createMarkup);
+  if (apiService.page === apiService.totalPages) {
+    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+    loadMoreBtn.classList.add("visually-hidden");
+  }
 }
 
 function createMarkup(hits) {
- if (apiService.page !== apiService.totalPages) {
-    loadMoreBtn.classList.remove("visually-hidden");
-  };
   const markup = hits.reduce((acc, hit) => {
     const { likes, views, comments, downloads, largeImageURL, webformatURL, tags } = hit;
     return `${acc}
