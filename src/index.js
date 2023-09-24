@@ -41,15 +41,14 @@ async function onSearch(evt) {
   catch (error) {
     console.log(error);
   }
-  
-}
+  }
 
 loadMoreBtn.addEventListener("click", onLoadMore);
 async function onLoadMore() {
   try {
     const hits = await apiService.fetchArticles();
     createMarkup(hits);
-  if (apiService.page === apiService.totalPages) {
+  if (apiService.page === apiService.totalPages + 1) {
     Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
     loadMoreBtn.classList.add("visually-hidden");
   }
@@ -85,9 +84,10 @@ function createMarkup(hits) {
   }, "");
   
     gallery.insertAdjacentHTML("beforeend", markup);
-     const lightbox = new SimpleLightbox('.gallery a', {
-      captionDelay: 250,
-  })
+  const lightbox = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+    })
   lightbox.refresh();
 }
 

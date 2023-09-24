@@ -20,6 +20,9 @@ export default class ApiService {
       this.incrementPage();
       this.totalImages = data.totalHits;
       this.totalPages = Math.ceil(this.totalImages / this.perPage);
+      console.log("data", data);
+      console.log("page:", this.page);
+      console.log("totalPages", this.totalPages);
       return data.hits;
     } catch (error) {
       console.log(error);
